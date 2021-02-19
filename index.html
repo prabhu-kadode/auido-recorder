@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let mediaRecorder;
+        let audioChunks =[];
+        const d = document.getElementById('d');
+        function recordStart() {
+        navigator.mediaDevices.getUserMedia({audio:true}).then((audioStream)=>{
+            mediaRecorder = new MediaRecorder(audioStream);
+            mediaRecorder.start();
+            mediaRecorder.addEventListener('dataavailable',(event)=>{
+                audioChunks.push(event.data);
+            })
+        })
+    }
+    function stop() {
+        mediaRecorder.stop();
+     
+    }
+    function play() {
+      
+        const audioBlob = new Blob(audioChunks,{type : 'audio/webm'});
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+       const a = document.createElement('a');
+       a.href = audioUrl;
+       a.download = "record.webm";
+       document.body.appendChild(a);
+       a.click();
+        //audio.play();
+       
+    }
+    </script>
+</head>
+<body>
+    <button onclick="recordStart()">Record Start</button>
+    <button onclick="stop()">Record Stop</button>
+    <button onclick="play()">Play Record</button>
+  
+    
+</body>
+</html>
